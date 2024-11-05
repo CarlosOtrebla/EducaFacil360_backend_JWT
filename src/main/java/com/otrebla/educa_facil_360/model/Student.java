@@ -1,10 +1,9 @@
 package com.otrebla.educa_facil_360.model;
 
 import com.otrebla.educa_facil_360.dto.Student.StudentRequestDTO;
-import com.otrebla.educa_facil_360.enums.PersonRole;
+import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +18,6 @@ import java.util.UUID;
 @Data // Gera os getters, setters, toString, equals e hashCode
 @NoArgsConstructor // Gera o construtor padrão
 @AllArgsConstructor // Gera o construtor com todos os atributos
-@Builder // Permite o uso do padrão Builder
 public class Student extends Person implements UserDetails {
     
     @Id
@@ -31,17 +29,21 @@ public class Student extends Person implements UserDetails {
     private String password;
     
     @Column(nullable = false)
-    private PersonRole role;
+    private PersonRoleENUM role;
     
     @Column(nullable = false)
     private Boolean isDeleted;
+    
+    @ManyToOne
+    @JoinColumn(name = "classroom_id")
+    private Classroom classroom;
     
     // Construtor que aceita StudentRequestDTO
     public Student(StudentRequestDTO studentRequestDto) {
         super(studentRequestDto.getName(), studentRequestDto.getEmail(), studentRequestDto.getCpf(),
                 studentRequestDto.getPhoneNumber(), LocalDateTime.now(), true); // Ajuste os valores conforme necessário
         this.password = studentRequestDto.getPassword();
-        this.role = PersonRole.STUDENT;
+        this.role = PersonRoleENUM.STUDENT;
         this.isDeleted = false; // Ou outro valor padrão conforme sua lógica
     }
     

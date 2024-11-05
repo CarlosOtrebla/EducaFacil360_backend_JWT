@@ -11,6 +11,7 @@ import com.otrebla.educa_facil_360.repository.StudentRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -28,6 +29,7 @@ public class StudentService {
         Student student = new Student(studentRequestDto);
         return new StudentResponseDTO(studentRepository.save(student));
     }
+    
     
     public PageResponseDTO<StudentResponseDTO> getAllByFieldSearch(String field, String search, Pageable pageable) throws RequestParamRequired {
         if (Objects.equals(field, "name")) {

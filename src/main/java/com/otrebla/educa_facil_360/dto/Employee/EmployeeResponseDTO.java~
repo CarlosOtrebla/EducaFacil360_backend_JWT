@@ -1,6 +1,5 @@
 package com.otrebla.educa_facil_360.dto.Employee;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import com.otrebla.educa_facil_360.model.Employee;
 import lombok.Data;
@@ -21,8 +20,6 @@ public class EmployeeResponseDTO {
     private String phoneNumber;
     private LocalDateTime registerTime;
     private Boolean active;
-    
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UUID> classrooms; // IDs das salas associadas ao funcionário
     
     public EmployeeResponseDTO(Employee employee) {

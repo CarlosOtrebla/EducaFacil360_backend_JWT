@@ -1,6 +1,6 @@
 package com.otrebla.educa_facil_360.dto.Employee;
 
-import com.otrebla.educa_facil_360.enums.PersonRole;
+import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -9,9 +9,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
-@Data // Gera getters e setters automaticamente
-@NoArgsConstructor // Construtor padrão
-@AllArgsConstructor // Construtor com todos os argumentos
+import java.util.List;
+import java.util.UUID;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class EmployeeRequestDTO {
     
     @NotBlank(message = "O nome é obrigatório")
@@ -32,7 +35,7 @@ public class EmployeeRequestDTO {
     @NotBlank(message = "A senha é obrigatória")
     private String password;
     
-    private PersonRole role;
+    private PersonRoleENUM role;
     
 
 }

@@ -1,5 +1,5 @@
 package com.otrebla.educa_facil_360.dto.Student;
-import com.otrebla.educa_facil_360.enums.PersonRole;
+import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import com.otrebla.educa_facil_360.model.Student;
 
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.util.UUID;
 @Data
 public class StudentResponseDTO {
     private UUID id;
-    private PersonRole role;
+    private PersonRoleENUM role;
     private String name;
     private String email;
     private String cpf;
@@ -28,4 +28,6 @@ public class StudentResponseDTO {
         this.active = student.getActive();
         this.role = student.getRole();
     }
+    
+  
 }
