@@ -1,6 +1,7 @@
 package com.otrebla.educa_facil_360.dto.Employee;
 
 import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -35,7 +36,11 @@ public class EmployeeRequestDTO {
     @NotBlank(message = "A senha é obrigatória")
     private String password;
     
+    @Column(unique = true)
+    private String username;
+    
     private PersonRoleENUM role;
     
-
+    
+  
 }

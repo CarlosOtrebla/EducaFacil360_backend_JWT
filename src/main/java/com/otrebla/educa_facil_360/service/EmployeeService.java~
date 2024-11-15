@@ -29,7 +29,7 @@ import java.util.UUID;
 public class EmployeeService implements UserDetailsService {
     
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private static EmployeeRepository employeeRepository;
     
     public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
         String hashPassword = new BCryptPasswordEncoder()

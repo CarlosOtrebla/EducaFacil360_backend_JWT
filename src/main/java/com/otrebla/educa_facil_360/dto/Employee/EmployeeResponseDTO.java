@@ -2,6 +2,7 @@ package com.otrebla.educa_facil_360.dto.Employee;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
+import com.otrebla.educa_facil_360.model.Classroom;
 import com.otrebla.educa_facil_360.model.Employee;
 import lombok.Data;
 
@@ -37,7 +38,7 @@ public class EmployeeResponseDTO {
         if(this.role == PersonRoleENUM.TEACHER) {
             this.classrooms = employee.getClassrooms() != null && !employee.getClassrooms().isEmpty()
                     ? employee.getClassrooms().stream()
-                    .map(classroom -> classroom.getId())
+                    .map(Classroom::getId)
                     .collect(Collectors.toList())
                     : Collections.emptyList();
         }

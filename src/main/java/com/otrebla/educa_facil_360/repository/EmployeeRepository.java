@@ -1,7 +1,6 @@
 package com.otrebla.educa_facil_360.repository;
 
 import com.otrebla.educa_facil_360.model.Employee;
-import com.otrebla.educa_facil_360.model.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
+    
+    Optional<Employee> findByUsername(String username);
     
     @Query(value = "SELECT * FROM employee WHERE email = :email " +
             "AND password = :password " +

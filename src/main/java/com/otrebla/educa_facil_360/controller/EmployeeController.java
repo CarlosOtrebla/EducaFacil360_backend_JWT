@@ -5,10 +5,12 @@ import com.otrebla.educa_facil_360.dto.Employee.EmployeeRequestDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeResponseDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeUpdateDTO;
 import com.otrebla.educa_facil_360.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,11 +18,12 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/Employee")
+@RequestMapping("/employee")
 public class EmployeeController {
     
     private final EmployeeService employeeService;
     
+    @Autowired
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
@@ -49,6 +52,7 @@ public class EmployeeController {
     }
     
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<PageResponseDTO<EmployeeResponseDTO>> getAllEmployees(
             @PageableDefault(page = 0, size = 10, sort = "registerTime", direction = Sort.Direction.DESC) Pageable pageable) {
         PageResponseDTO<EmployeeResponseDTO> page = employeeService.getAllEmployees(pageable);

@@ -37,5 +37,6 @@ public class EmployeeRequestDTO {
     
     private PersonRoleENUM role;
     
-    private List<UUID> classrooms; // IDs das salas associadas ao funcionário
+    
+
 }

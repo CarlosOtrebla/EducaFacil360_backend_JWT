@@ -1,0 +1,4 @@
+package com.otrebla.educa_facil_360.security;
+
+public class JwtConfig {
+}

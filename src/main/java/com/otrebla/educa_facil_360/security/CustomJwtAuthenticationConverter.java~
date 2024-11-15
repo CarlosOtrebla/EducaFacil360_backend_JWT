@@ -1,0 +1,30 @@
+package com.otrebla.educa_facil_360.security;
+
+import com.fasterxml.jackson.databind.util.Converter;
+import io.jsonwebtoken.Jwt;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Component;
+
+import java.util.Collections;
+
+@Component
+public class CustomJwtAuthenticationConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
+    
+    @Override
+    public UsernamePasswordAuthenticationToken convert(Jwt jwt) {
+        String username = (String) jwt.getClaims().get("sub");
+        String role = (String) jwt.getClaims().get("role");
+        
+        // Crie um objeto UsernamePasswordAuthenticationToken com os dados do usuário
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                username,
+                null,
+                Collections.singleton(new SimpleGrantedAuthority(role))
+        );
+        
+        return authentication;
+    }
+}
+
+

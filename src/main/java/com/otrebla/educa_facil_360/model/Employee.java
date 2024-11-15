@@ -3,11 +3,9 @@ package com.otrebla.educa_facil_360.model;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeRequestDTO;
 import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -16,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data // Gera os getters, setters, toString, equals e hashCode
 @NoArgsConstructor // Gera o construtor padrão
@@ -30,6 +29,9 @@ public class Employee extends Person implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+    
+    @Column(unique = true)
+    private String username;
 
     @Column(nullable = false)
     private PersonRoleENUM role;
@@ -51,6 +53,7 @@ public class Employee extends Person implements UserDetails {
         super(employeeRequestDto.getName(), employeeRequestDto.getEmail(), employeeRequestDto.getCpf(),
                 employeeRequestDto.getPhoneNumber(), LocalDateTime.now(), true); // Ajuste os valores conforme necessário
         this.password = employeeRequestDto.getPassword();
+        this.username = employeeRequestDto.getUsername();
         this.role = employeeRequestDto.getRole();
         this.isDeleted = false; // Ou outro valor padrão conforme sua lógica
         if(this.role == PersonRoleENUM.TEACHER) {
@@ -61,17 +64,17 @@ public class Employee extends Person implements UserDetails {
     // Sobrescrevendo métodos da interface UserDetails
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override
     public String getPassword() {
-        return password; // Retorna o atributo password
+        return this.password; // Retorna o atributo password
     }
 
     @Override
     public String getUsername() {
-        return super.getEmail(); // Retorna o email como nome de usuário
+        return this.username;
     }
 
     @Override
