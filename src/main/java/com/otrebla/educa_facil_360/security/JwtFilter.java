@@ -41,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token.isPresent()) {
             
             // (3) se existir, validamos o token
-            String subject = tokenService.validateToken(token.get());
+            String subject = String.valueOf(tokenService.validateToken(token.get()));
             
             // (4) se o token for válido (não houve exceção), encontramos a pessoa associada
             UserDetails userDetails = employeeService.loadUserByUsername(subject);

@@ -3,6 +3,7 @@ package com.otrebla.educa_facil_360.controller;
 
 import com.otrebla.educa_facil_360.dto.AuthDTO;
 import com.otrebla.educa_facil_360.dto.TokenDTO;
+import com.otrebla.educa_facil_360.model.Employee;
 import com.otrebla.educa_facil_360.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +31,10 @@ public class AuthController {
         UsernamePasswordAuthenticationToken usernamePassword =
                 new UsernamePasswordAuthenticationToken(authDTO.username(), authDTO.password());
         Authentication auth =  authenticationManager.authenticate(usernamePassword);
-        String token = tokenService.generateToken(auth.getName());
-        return new TokenDTO(token, auth.getName());
+        Employee employee = (Employee) auth.getPrincipal();
+
+        String token = tokenService.generateToken(auth.getName(), employee.getRole().name());
+
+        return new TokenDTO(token, employee.getName(), employee.getRole().name());
     }
 }
