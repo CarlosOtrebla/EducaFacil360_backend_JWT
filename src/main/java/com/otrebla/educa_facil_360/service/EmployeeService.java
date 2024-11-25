@@ -6,12 +6,15 @@ import com.otrebla.educa_facil_360.dto.PageResponseDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeRequestDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeResponseDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeUpdateDTO;
+import com.otrebla.educa_facil_360.exception.CustomValidationException;
 import com.otrebla.educa_facil_360.exception.NotFoundException;
 import com.otrebla.educa_facil_360.exception.RequestParamRequired;
 import com.otrebla.educa_facil_360.model.Employee;
 import com.otrebla.educa_facil_360.model.Employee;
 import com.otrebla.educa_facil_360.repository.EmployeeRepository;
 import com.otrebla.educa_facil_360.repository.EmployeeRepository;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -31,11 +34,37 @@ public class EmployeeService implements UserDetailsService {
     @Autowired
     private EmployeeRepository employeeRepository;
     
+//    public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
+//        String hashPassword = new BCryptPasswordEncoder()
+//                .encode(employeeRequestDTO.getPassword());
+//        employeeRequestDTO.setPassword(hashPassword);
+//        System.out.println("Dados do EmployeeRequestDTO: " + employeeRequestDTO);
+//        Employee employee = new Employee(employeeRequestDTO);
+//        return new EmployeeResponseDTO(employeeRepository.save(employee));
+//    }
+
     public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
-        String hashPassword = new BCryptPasswordEncoder()
-                .encode(employeeRequestDTO.getPassword());
+        Map<String, String> errors = new HashMap<>();
+
+        // Validação de CPF
+        if (employeeRepository.existsByCpf(employeeRequestDTO.getCpf())) {
+            errors.put("cpf", "CPF já está em uso.");
+        }
+
+        // Validação de Email
+        if (existsByEmail(employeeRequestDTO.getEmail())) {
+            errors.put("email", "E-mail já está em uso.");
+        }
+
+        // Se houver erros, lança exceção
+        if (!errors.isEmpty()) {
+            throw new CustomValidationException(errors);
+        }
+
+        // Hash da senha e criação do funcionário
+        String hashPassword = new BCryptPasswordEncoder().encode(employeeRequestDTO.getPassword());
         employeeRequestDTO.setPassword(hashPassword);
-        System.out.println("Dados do EmployeeRequestDTO: " + employeeRequestDTO);
+
         Employee employee = new Employee(employeeRequestDTO);
         return new EmployeeResponseDTO(employeeRepository.save(employee));
     }
