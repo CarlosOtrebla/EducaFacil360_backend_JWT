@@ -36,6 +36,11 @@ public class JwtFilter extends OncePerRequestFilter {
         
         // (1) tentamos extrair o token
         Optional<String> token = extractToken(request);
+
+        if (request.getRequestURI().contains("/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         
         // (2) verificamos se ele existe
         if (token.isPresent()) {

@@ -17,7 +17,7 @@ public class TokenService {
         this.algorithm = Algorithm.HMAC256(secret);
     }
     
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, byte[] profilePicture) {
         return JWT.create()
                 .withSubject(username)
                 .withClaim("role", role)

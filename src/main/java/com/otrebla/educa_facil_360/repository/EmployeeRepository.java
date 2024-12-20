@@ -67,11 +67,24 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     @Query(value = "SELECT * FROM employee WHERE id = :id AND is_deleted = false", nativeQuery = true)
     Optional<Employee> findNonDeletedById(UUID id);
 
-    // Novo método para verificar a existência de CPF
+    // Verificar a existência de CPF
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM employee WHERE cpf = :cpf", nativeQuery = true)
     boolean existsByCpf(String cpf);
 
-    // Novo método para verificar a existência de e-mail
+    // Verificar a existência de e-mail
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM employee WHERE email = :email", nativeQuery = true)
     boolean existsByEmail(String email);
+
+    // Verificar existência de username
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM employee WHERE username = :username", nativeQuery = true)
+    boolean existsByUsername(String username);
+
+    // Verificar existência de phoneNumber
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM employee WHERE phone_number = :phoneNumber", nativeQuery = true)
+    boolean existsByPhoneNumber(String phoneNumber);
+
+
+
+
+
 }

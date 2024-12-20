@@ -5,6 +5,7 @@ import com.otrebla.educa_facil_360.dto.Employee.EmployeeRequestDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeResponseDTO;
 import com.otrebla.educa_facil_360.dto.Employee.EmployeeUpdateDTO;
 import com.otrebla.educa_facil_360.service.EmployeeService;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -81,4 +83,17 @@ public class EmployeeController {
         employeeService.deleteEmployeeById(id);
         return ResponseEntity.noContent().build();
     }
+    @PostMapping("/{id}/upload-photo")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('SCHOOL_PRINCIPAL') or hasAuthority('TEACHER') ")
+    public ResponseEntity<String> uploadPhoto(@PathVariable UUID id, @RequestParam("photo") MultipartFile photo) throws IOException {
+        // Busca o Employee pelo ID
+        EmployeeResponseDTO employee = employeeService.getEmployeeById(id);
+
+        // Salva a foto no banco
+        employeeService.saveEmployeePhoto(id, photo.getBytes());
+
+        return ResponseEntity.ok("Foto salva com sucesso!");
+    }
+
+
 }

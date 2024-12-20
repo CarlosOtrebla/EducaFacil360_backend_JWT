@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.otrebla.educa_facil_360.enums.PersonRoleENUM;
 import com.otrebla.educa_facil_360.model.Classroom;
 import com.otrebla.educa_facil_360.model.Employee;
+import java.util.Base64;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -22,10 +23,11 @@ public class EmployeeResponseDTO {
     private String phoneNumber;
     private LocalDateTime registerTime;
     private Boolean active;
-    
+    private String profilePicture;
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<UUID> classrooms; // IDs das salas associadas ao funcionário
-    
+
     public EmployeeResponseDTO(Employee employee) {
         this.id = employee.getId();
         this.name = employee.getName();
@@ -35,12 +37,16 @@ public class EmployeeResponseDTO {
         this.registerTime = employee.getRegisterTime();
         this.active = employee.getActive();
         this.role = employee.getRole();
-        if(this.role == PersonRoleENUM.TEACHER) {
+        this.profilePicture = employee.getProfilePicture() != null
+            ? Base64.getEncoder().encodeToString(employee.getProfilePicture())
+            : null; // Converte o byte[] para Base64, ou mantém null se não houver imagem
+
+        if (this.role == PersonRoleENUM.TEACHER) {
             this.classrooms = employee.getClassrooms() != null && !employee.getClassrooms().isEmpty()
-                    ? employee.getClassrooms().stream()
-                    .map(Classroom::getId)
-                    .collect(Collectors.toList())
-                    : Collections.emptyList();
+                ? employee.getClassrooms().stream()
+                .map(Classroom::getId)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
         }
     }
 }

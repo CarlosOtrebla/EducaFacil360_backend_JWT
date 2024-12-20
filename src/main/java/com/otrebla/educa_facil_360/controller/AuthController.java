@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000/login") // Adiciona CORS diretamente aqui
+@CrossOrigin(origins = "http://localhost:3000") // Adiciona CORS diretamente aqui
 public class AuthController {
     
     private final AuthenticationManager authenticationManager;
@@ -33,8 +33,8 @@ public class AuthController {
         Authentication auth =  authenticationManager.authenticate(usernamePassword);
         Employee employee = (Employee) auth.getPrincipal();
 
-        String token = tokenService.generateToken(auth.getName(), employee.getRole().name());
+        String token = tokenService.generateToken(auth.getName(), employee.getRole().name(), employee.getProfilePicture());
 
-        return new TokenDTO(token, employee.getName(), employee.getRole().name());
+        return new TokenDTO(token, employee.getName(), employee.getRole().name(), employee.getProfilePicture());
     }
 }

@@ -38,7 +38,10 @@ public class Employee extends Person implements UserDetails {
 
     @Column(nullable = false)
     private Boolean isDeleted;
-    
+
+    @Column(name = "profile_picture", columnDefinition = "BYTEA")
+    private byte[] profilePicture;
+
     @ManyToMany
     @JoinTable(
             name = "classroom_employee",
@@ -50,8 +53,8 @@ public class Employee extends Person implements UserDetails {
 
     // Construtor que aceita EmployeeRequestDTO
     public Employee(EmployeeRequestDTO employeeRequestDto) {
-        super(employeeRequestDto.getName(), employeeRequestDto.getEmail(), employeeRequestDto.getCpf(),
-                employeeRequestDto.getPhoneNumber(), LocalDateTime.now(), true); // Ajuste os valores conforme necessário
+        super(employeeRequestDto.getName(),employeeRequestDto.getEmail(), employeeRequestDto.getCpf(),
+                employeeRequestDto.getPhoneNumber(), LocalDateTime.now(), true);
         this.password = employeeRequestDto.getPassword();
         this.username = employeeRequestDto.getUsername();
         this.role = employeeRequestDto.getRole();
@@ -69,7 +72,7 @@ public class Employee extends Person implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.password; // Retorna o atributo password
+        return this.password;
     }
 
     @Override

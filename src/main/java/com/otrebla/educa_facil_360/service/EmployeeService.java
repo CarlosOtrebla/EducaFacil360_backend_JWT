@@ -13,6 +13,7 @@ import com.otrebla.educa_facil_360.model.Employee;
 import com.otrebla.educa_facil_360.model.Employee;
 import com.otrebla.educa_facil_360.repository.EmployeeRepository;
 import com.otrebla.educa_facil_360.repository.EmployeeRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.BeanUtils;
@@ -33,27 +34,40 @@ public class EmployeeService implements UserDetailsService {
     
     @Autowired
     private EmployeeRepository employeeRepository;
-    
-//    public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
-//        String hashPassword = new BCryptPasswordEncoder()
-//                .encode(employeeRequestDTO.getPassword());
-//        employeeRequestDTO.setPassword(hashPassword);
-//        System.out.println("Dados do EmployeeRequestDTO: " + employeeRequestDTO);
-//        Employee employee = new Employee(employeeRequestDTO);
-//        return new EmployeeResponseDTO(employeeRepository.save(employee));
-//    }
 
     public EmployeeResponseDTO saveEmployee(EmployeeRequestDTO employeeRequestDTO) {
         Map<String, String> errors = new HashMap<>();
 
-        // Validação de CPF
+
+        if (employeeRequestDTO.getName() != null) {
+            employeeRequestDTO.setName(employeeRequestDTO.getName().trim());
+        }
+
+        if (employeeRequestDTO.getEmail() != null) {
+            employeeRequestDTO.setEmail(employeeRequestDTO.getEmail().trim());
+        }
+        if (employeeRequestDTO.getUsername() != null) {
+            employeeRequestDTO.setUsername(employeeRequestDTO.getUsername().trim());
+        }
+
+        // Verifica duplicidade de CPF
         if (employeeRepository.existsByCpf(employeeRequestDTO.getCpf())) {
             errors.put("cpf", "CPF já está em uso.");
         }
 
-        // Validação de Email
+        // Verifica duplicidade de Email
         if (existsByEmail(employeeRequestDTO.getEmail())) {
             errors.put("email", "E-mail já está em uso.");
+        }
+
+        // Validação de Username
+        if (employeeRepository.existsByUsername(employeeRequestDTO.getUsername())) {
+            errors.put("username", "Usuário já existe.");
+        }
+
+        // Validação de Número de Telefone
+        if (employeeRepository.existsByPhoneNumber(employeeRequestDTO.getPhoneNumber())) {
+            errors.put("phoneNumber", "Telefone já cadastrado.");
         }
 
         // Se houver erros, lança exceção
@@ -88,7 +102,7 @@ public class EmployeeService implements UserDetailsService {
         Employee employee = employeeRepository.findById(id).orElseThrow(NotFoundException::new);
         return new EmployeeResponseDTO(employee);
     }
-    
+
     // Editar
     public EmployeeResponseDTO updateEmployeeById(UUID id, EmployeeUpdateDTO newEmployeeDto) {
         Employee employee = employeeRepository.findById(id).orElseThrow(NotFoundException::new);
@@ -105,7 +119,10 @@ public class EmployeeService implements UserDetailsService {
         
         return new EmployeeResponseDTO(employeeRepository.save(employee));
     }
-    
+
+//    public void saveEmployeePhoto(UUID id, byte[] photoBytes);
+//
+
     // Desabilitar
     public void toggleEmployeeActiveById(UUID id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(NotFoundException::new);
@@ -140,4 +157,14 @@ public class EmployeeService implements UserDetailsService {
         return employeeRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
+//    @Override
+    public void saveEmployeePhoto(UUID id, byte[] photoBytes) {
+        Employee employee = employeeRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Employee não encontrado com o ID: " + id));
+
+        employee.setProfilePicture(photoBytes); // Adiciona o campo profilePicture no modelo
+        employeeRepository.save(employee);
+    }
+
+
 }
